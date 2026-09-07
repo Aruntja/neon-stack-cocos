@@ -11,7 +11,7 @@ import {
   v3
 } from 'cc';
 import { Colors } from '../config/ColorScheme';
-import { BLOCK_HEIGHT, BLOCK_WIDTH, FLOOR_Y, INITIAL_BET, STACK_START_Y } from '../config/Constants';
+import { BLOCK_HEIGHT, BLOCK_WIDTH, DEMOLITION_STEP, FLOOR_Y, INITIAL_BET, STACK_START_Y } from '../config/Constants';
 import { DifficultyLevels } from '../config/DifficultyConfig';
 import { BlockController } from '../controllers/BlockController';
 import { ParticleController } from '../controllers/ParticleController';
@@ -69,6 +69,7 @@ export class GameManager extends Component {
     this.ensureManagers();
     this.bindControls();
     this.gameLayer.on(Node.EventType.TOUCH_END, this.onDropRequest, this);
+    this.gameLayer.on(Node.EventType.MOUSE_UP, this.onDropRequest, this);
   }
 
   async start(): Promise<void> {
@@ -84,6 +85,7 @@ export class GameManager extends Component {
 
   onDestroy(): void {
     this.gameLayer.off(Node.EventType.TOUCH_END, this.onDropRequest, this);
+    this.gameLayer.off(Node.EventType.MOUSE_UP, this.onDropRequest, this);
   }
 
   private ensureRootNodes(): void {
@@ -310,7 +312,7 @@ export class GameManager extends Component {
     for (let i = this.stackBlocks.length - 1; i >= 1; i -= 1) {
       const block = this.stackBlocks[i];
       const worldPos = block.getWorldPosition(new Vec3());
-      this.animation.fadeOutAndDestroy(block, (this.stackBlocks.length - 1 - i) * 0.07);
+      this.animation.fadeOutAndDestroy(block, (this.stackBlocks.length - 1 - i) * DEMOLITION_STEP);
       if (this.debrisPrefab && block.isValid) {
         for (let p = 0; p < 3; p += 1) {
           const debris = instantiate(this.debrisPrefab);
@@ -321,6 +323,7 @@ export class GameManager extends Component {
     }
 
     this.scheduleOnce(() => {
+      if (!this.isValid || !this.node?.isValid) return;
       this.cameraController.reset();
       this.startRound();
     }, 1.1);

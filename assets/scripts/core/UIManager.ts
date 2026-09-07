@@ -118,7 +118,6 @@ export class UIManager extends Component {
       if (!this.controlsLocked) cb();
     };
     label.node.on(Node.EventType.TOUCH_END, handler);
-    label.node.on(Node.EventType.MOUSE_UP, handler);
   }
 
   private createLabel(parent: Node, name: string, x: number, y: number, text: string, size: number, color: Color): Label {
