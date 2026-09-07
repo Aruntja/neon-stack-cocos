@@ -9,6 +9,7 @@ declare module 'cc' {
   export const EventTouch: any;
   export const UITransform: any;
   export const Label: any;
+  export const Button: any;
   export const Color: any;
   export const Sprite: any;
   export const SpriteFrame: any;

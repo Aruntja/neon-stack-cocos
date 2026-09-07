@@ -1,4 +1,5 @@
 import { _decorator, Component, Node, v3 } from 'cc';
+import { DROP_GRAVITY, DROP_HORIZONTAL_LERP } from '../config/Constants';
 import { LandingResult } from '../types/Types';
 
 const { ccclass } = _decorator;
@@ -33,10 +34,10 @@ export class PhysicsSimulator extends Component {
     if (!this.activeDrop) return;
 
     const d = this.activeDrop;
-    d.speedY += 1600 * dt;
+    d.speedY += DROP_GRAVITY * dt;
 
     const p = d.node.position;
-    const x = p.x + (d.targetX - p.x) * d.assist * dt * 6;
+    const x = p.x + (d.targetX - p.x) * d.assist * dt * DROP_HORIZONTAL_LERP;
     const y = p.y - d.speedY * dt;
     d.node.setPosition(v3(x, y, 0));
 

@@ -120,7 +120,7 @@ export class GameManager extends Component {
       this.refreshHUD();
     };
     this.uiManager.onBetUp = () => {
-      this.bet = Math.min(this.balance, this.bet + 1);
+      this.bet = Math.max(1, Math.min(Math.max(this.balance, 1), this.bet + 1));
       this.refreshHUD();
     };
     this.uiManager.onDifficultyDown = () => {
@@ -189,6 +189,9 @@ export class GameManager extends Component {
     base.setPosition(v3(0, STACK_START_Y, 0));
     this.gameLayer.addChild(base);
     this.stackBlocks = [base];
+
+    this.balance -= this.bet;
+    this.persist();
 
     this.uiManager.showResultBanner('Tap to drop', true);
     this.uiManager.updateLadder(this.round.multipliers.slice(0, 8), 0);
@@ -278,7 +281,7 @@ export class GameManager extends Component {
     this.uiManager.setLocked(false);
 
     const rewardMulti = this.round?.multipliers[Math.max(0, this.score - 1)] ?? 0;
-    const payout = Math.floor(this.bet * rewardMulti) - this.bet;
+    const payout = Math.floor(this.bet * rewardMulti);
     this.balance += payout;
     this.bestScore = Math.max(this.bestScore, this.score);
     this.persist();
@@ -288,7 +291,7 @@ export class GameManager extends Component {
   }
 
   private demolishTower(): void {
-    for (let i = this.stackBlocks.length - 1; i >= 0; i -= 1) {
+    for (let i = this.stackBlocks.length - 1; i >= 1; i -= 1) {
       const block = this.stackBlocks[i];
       this.animation.fadeOutAndDestroy(block, (this.stackBlocks.length - 1 - i) * 0.07);
       if (this.debrisPrefab && block.isValid) {

@@ -14,4 +14,5 @@ export const INITIAL_BET = 10;
 export const VISIBLE_LADDER_ITEMS = 8;
 
 export const DROP_GRAVITY = 1600;
+export const DROP_HORIZONTAL_LERP = 6;
 export const DEMOLITION_STEP = 0.07;

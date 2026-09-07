@@ -1,4 +1,4 @@
-import { _decorator, Color, Component, Label, Node, UITransform, v3 } from 'cc';
+import { _decorator, Button, Color, Component, Label, Node, UITransform, v3 } from 'cc';
 import { Colors } from '../config/ColorScheme';
 import { VISIBLE_LADDER_ITEMS } from '../config/Constants';
 
@@ -111,6 +111,9 @@ export class UIManager extends Component {
 
   private createActionLabel(parent: Node, name: string, x: number, y: number, text: string, cb: () => void): void {
     const label = this.createLabel(parent, name, x, y, text, 48, Colors.neonBlue);
+    const ui = label.node.getComponent(UITransform);
+    if (ui) ui.setContentSize(90, 90);
+    label.node.addComponent(Button);
     label.node.on(Node.EventType.TOUCH_END, () => {
       if (!this.controlsLocked) cb();
     });
