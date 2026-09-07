@@ -1,27 +1,78 @@
 declare module 'cc' {
-  export const _decorator: any;
-  export const resources: any;
-  export const tween: any;
-  export const v3: any;
-  export const Vec3: any;
-  export const v2: any;
+  export const _decorator: {
+    ccclass: (name: string) => ClassDecorator;
+    property: (type?: any) => PropertyDecorator;
+  };
+
+  export class Vec3 {
+    constructor(x?: number, y?: number, z?: number);
+    x: number;
+    y: number;
+    z: number;
+  }
+
+  export class Component {
+    node: Node;
+    isValid: boolean;
+    getComponent<T>(type: new (...args: any[]) => T): T | null;
+    addComponent<T>(type: new (...args: any[]) => T): T;
+    scheduleOnce(callback: () => void, delay?: number): void;
+  }
+
+  export class Node {
+    static EventType: any;
+    constructor(name?: string);
+    name: string;
+    parent: Node | null;
+    children: Node[];
+    isValid: boolean;
+    position: Vec3;
+    worldPosition: Vec3;
+    addChild(child: Node): void;
+    setPosition(pos: Vec3): void;
+    setWorldPosition(pos: Vec3): void;
+    getWorldPosition(out?: Vec3): Vec3;
+    destroy(): void;
+    on(...args: any[]): void;
+    off(...args: any[]): void;
+    getChildByName(name: string): Node | null;
+    getComponent<T>(type: new (...args: any[]) => T): T | null;
+    addComponent<T>(type: new (...args: any[]) => T): T;
+  }
+
+  export class Prefab {}
+  export class Camera extends Component {}
+  export class UITransform extends Component {
+    setContentSize(width: number, height: number): void;
+    setContentSize(size: Size): void;
+  }
+  export class Label extends Component { string: string; fontSize: number; lineHeight: number; color: Color; horizontalAlign: number; }
+  export class Button extends Component { clickEvents: any[]; interactable: boolean; }
+  export class Color { constructor(r?: number, g?: number, b?: number, a?: number); static WHITE: Color; }
+  export class Sprite extends Component { color: Color; spriteFrame: SpriteFrame | null; }
+  export class Graphics extends Component {
+    fillColor: Color;
+    clear(): void;
+    rect(x: number, y: number, w: number, h: number): void;
+    roundRect(x: number, y: number, w: number, h: number, radius: number): void;
+    circle(x: number, y: number, radius: number): void;
+    fill(): void;
+  }
+  export class SpriteFrame { texture: Texture2D | null; }
+  export class Texture2D { image: ImageAsset | null; }
+  export class ImageAsset { reset(data: any): void; }
+  export class Size { constructor(width?: number, height?: number); }
+  export class EventTouch {}
+
+  export const resources: {
+    load(path: string, callback: (err: Error | null, asset: any) => void): void;
+    load<T>(path: string, type: new (...args: any[]) => T, callback: (err: Error | null, asset: T | null) => void): void;
+  };
+  export function instantiate(prefab: Prefab): Node;
+  export function tween(target: any): any;
+  export function v3(x?: number, y?: number, z?: number): Vec3;
+  export function v2(x?: number, y?: number): any;
   export const input: any;
   export const Input: any;
-  export const EventTouch: any;
-  export const UITransform: any;
-  export const Label: any;
-  export const Button: any;
-  export const Color: any;
-  export const Sprite: any;
-  export const Graphics: any;
-  export const SpriteFrame: any;
-  export const Texture2D: any;
-  export const ImageAsset: any;
-  export const Size: any;
-  export const Camera: any;
-  export const Node: any;
-  export const Prefab: any;
-  export const instantiate: any;
-  export const Component: any;
   export const math: any;
 }
