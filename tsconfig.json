@@ -7,10 +7,7 @@
     "strict": false,
     "skipLibCheck": true,
     "allowJs": false,
-    "resolveJsonModule": true,
-    "paths": {
-      "assets/scripts/*": ["./assets/scripts/*"]
-    }
+    "resolveJsonModule": true
   },
   "include": [
     "assets/scripts/**/*.ts"
