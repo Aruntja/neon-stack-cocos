@@ -6,8 +6,7 @@ Ready-to-play Cocos Creator project for **Neon Stack**.
 
 1. Clone this repository.
 2. Open **Cocos Creator 3.8+**.
-3. Choose **Open** and select:
-   `/home/runner/work/neon-stack-cocos/neon-stack-cocos` (or your local clone path)
+3. Choose **Open** and select your cloned `neon-stack-cocos` project folder.
 4. Open scene: `assets/scenes/GameScene.scene`
 5. Click **Play**.
 
@@ -55,4 +54,3 @@ No imports, extra setup, or build steps are required.
 - **Colors / neon palette**: `assets/scripts/config/ColorScheme.ts`
 - **Round generation logic**: `assets/scripts/services/BackendService.ts`
 - **Persistence keys and defaults**: `assets/scripts/services/StorageService.ts`
-

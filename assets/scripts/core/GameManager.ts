@@ -2,8 +2,6 @@ import {
   _decorator,
   Camera,
   Component,
-  input,
-  Input,
   instantiate,
   Node,
   Prefab,
@@ -69,7 +67,7 @@ export class GameManager extends Component {
     this.ensureRootNodes();
     this.ensureManagers();
     this.bindControls();
-    input.on(Input.EventType.TOUCH_END, this.onDropRequest, this);
+    this.gameLayer.on(Node.EventType.TOUCH_END, this.onDropRequest, this);
   }
 
   async start(): Promise<void> {
@@ -84,7 +82,7 @@ export class GameManager extends Component {
   }
 
   onDestroy(): void {
-    input.off(Input.EventType.TOUCH_END, this.onDropRequest, this);
+    this.gameLayer.off(Node.EventType.TOUCH_END, this.onDropRequest, this);
   }
 
   private ensureRootNodes(): void {
@@ -166,9 +164,9 @@ export class GameManager extends Component {
 
   private instantiateStaticPrefabs(): void {
     this.spawnStaticPrefab(this.hudPrefab, this.uiLayer, 'HUD', 0, 830);
-    this.spawnStaticPrefab(this.controlBarPrefab, this.uiLayer, 'ControlBarPrefab', 0, -860);
-    this.spawnStaticPrefab(this.resultBannerPrefab, this.uiLayer, 'ResultBannerPrefab', 0, 620);
-    this.spawnStaticPrefab(this.ladderPrefab, this.uiLayer, 'LadderPrefab', 430, -180);
+    this.spawnStaticPrefab(this.controlBarPrefab, this.uiLayer, 'ControlBar', 0, -860);
+    this.spawnStaticPrefab(this.resultBannerPrefab, this.uiLayer, 'ResultBanner', 0, 620);
+    this.spawnStaticPrefab(this.ladderPrefab, this.uiLayer, 'Ladder', 430, -180);
     this.spawnStaticPrefab(this.particlesPrefab, this.effectsLayer, 'Particles', 0, 0);
   }
 
@@ -191,9 +189,6 @@ export class GameManager extends Component {
     base.setPosition(v3(0, STACK_START_Y, 0));
     this.gameLayer.addChild(base);
     this.stackBlocks = [base];
-
-    this.balance -= this.bet;
-    this.persist();
 
     this.uiManager.showResultBanner('Tap to drop', true);
     this.uiManager.updateLadder(this.round.multipliers.slice(0, 8), 0);
@@ -283,7 +278,7 @@ export class GameManager extends Component {
     this.uiManager.setLocked(false);
 
     const rewardMulti = this.round?.multipliers[Math.max(0, this.score - 1)] ?? 0;
-    const payout = Math.floor(this.bet * rewardMulti);
+    const payout = Math.floor(this.bet * rewardMulti) - this.bet;
     this.balance += payout;
     this.bestScore = Math.max(this.bestScore, this.score);
     this.persist();

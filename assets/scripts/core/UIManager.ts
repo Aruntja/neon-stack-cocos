@@ -22,14 +22,21 @@ export class UIManager extends Component {
   onDifficultyUp: (() => void) | null = null;
 
   build(root: Node): void {
-    const hud = this.createLabel(root, 'HUD_Score', -460, 860, 'Score: 0', 38, Colors.text);
-    this.scoreLabel = hud;
-    this.balanceLabel = this.createLabel(root, 'HUD_Balance', -460, 810, 'Balance: 0', 30, Colors.text);
-    this.bestLabel = this.createLabel(root, 'HUD_Best', 250, 860, 'Best: 0', 34, Colors.text);
-    this.bannerLabel = this.createLabel(root, 'ResultBanner', 0, 620, '', 56, Colors.neonLime);
+    const hudRoot = root.getChildByName('HUD') ?? root;
+    const bannerRoot = root.getChildByName('ResultBanner') ?? root;
+    const controlRoot = root.getChildByName('ControlBar') ?? root;
+    const ladderRoot = root.getChildByName('Ladder') ?? root;
 
-    this.createControlBar(root);
-    this.createLadder(root);
+    const hud = this.createLabel(hudRoot, 'HUD_Score', -460, 30, 'Score: 0', 38, Colors.text);
+    this.scoreLabel = hud;
+    this.balanceLabel = this.createLabel(hudRoot, 'HUD_Balance', -460, -20, 'Balance: 0', 30, Colors.text);
+    this.bestLabel = this.createLabel(hudRoot, 'HUD_Best', 250, 30, 'Best: 0', 34, Colors.text);
+
+    this.bannerLabel = bannerRoot.getComponent(Label) ?? this.createLabel(bannerRoot, 'ResultBannerText', 0, 0, '', 56, Colors.neonLime);
+    this.bannerLabel.node.setPosition(v3(0, 0, 0));
+
+    this.createControlBar(controlRoot);
+    this.createLadder(ladderRoot);
   }
 
   setLocked(locked: boolean): void {
@@ -63,11 +70,14 @@ export class UIManager extends Component {
   }
 
   private createControlBar(root: Node): void {
-    const bar = new Node('ControlBar');
-    bar.parent = root;
-    bar.setPosition(v3(0, -860, 0));
-    const ui = bar.addComponent(UITransform);
-    ui.setContentSize(1000, 150);
+    const reused = root.name === 'ControlBar';
+    const bar = reused ? root : new Node('ControlBar');
+    if (!bar.parent) bar.parent = root;
+    if (!reused) bar.setPosition(v3(0, -860, 0));
+    if (!bar.getComponent(UITransform)) {
+      const ui = bar.addComponent(UITransform);
+      ui.setContentSize(1000, 150);
+    }
 
     const betValue = this.createLabel(bar, 'BetValue', -260, 0, 'Bet: 10', 30, Colors.text);
     betValue.node.name = 'BetValue';
@@ -84,11 +94,14 @@ export class UIManager extends Component {
   }
 
   private createLadder(root: Node): void {
-    const ladder = new Node('Ladder');
-    ladder.parent = root;
-    ladder.setPosition(v3(430, -180, 0));
-    const ui = ladder.addComponent(UITransform);
-    ui.setContentSize(180, 1080);
+    const reused = root.name === 'Ladder';
+    const ladder = reused ? root : new Node('Ladder');
+    if (!ladder.parent) ladder.parent = root;
+    if (!reused) ladder.setPosition(v3(430, -180, 0));
+    if (!ladder.getComponent(UITransform)) {
+      const ui = ladder.addComponent(UITransform);
+      ui.setContentSize(180, 1080);
+    }
 
     for (let i = 0; i < VISIBLE_LADDER_ITEMS; i += 1) {
       const label = this.createLabel(ladder, `Ladder_${i}`, 0, i * 90, `${(1 + i * 0.1).toFixed(2)}x`, 28, Colors.text);
