@@ -1,0 +1,27 @@
+declare module 'cc' {
+  export const _decorator: any;
+  export const resources: any;
+  export const tween: any;
+  export const v3: any;
+  export const Vec3: any;
+  export const v2: any;
+  export const input: any;
+  export const Input: any;
+  export const EventTouch: any;
+  export const UITransform: any;
+  export const Label: any;
+  export const Button: any;
+  export const Color: any;
+  export const Sprite: any;
+  export const Graphics: any;
+  export const SpriteFrame: any;
+  export const Texture2D: any;
+  export const ImageAsset: any;
+  export const Size: any;
+  export const Camera: any;
+  export const Node: any;
+  export const Prefab: any;
+  export const instantiate: any;
+  export const Component: any;
+  export const math: any;
+}
