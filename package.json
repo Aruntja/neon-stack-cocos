@@ -1,0 +1,15 @@
+{
+  "name": "neon-stack-cocos",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Ready-to-play Cocos Creator 3.x Neon Stack project",
+  "creator": {
+    "version": "3.8.4"
+  },
+  "scripts": {
+    "test": "echo 'No standalone CLI tests for Cocos assets'"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.2"
+  }
+}
