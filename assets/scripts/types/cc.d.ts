@@ -42,7 +42,10 @@ declare module 'cc' {
 
   export class Prefab {}
   export class Camera extends Component {}
-  export class UITransform extends Component { setContentSize(width: number, height: number): void; }
+  export class UITransform extends Component {
+    setContentSize(width: number, height: number): void;
+    setContentSize(size: Size): void;
+  }
   export class Label extends Component { string: string; fontSize: number; lineHeight: number; color: Color; horizontalAlign: number; }
   export class Button extends Component { clickEvents: any[]; interactable: boolean; }
   export class Color { constructor(r?: number, g?: number, b?: number, a?: number); static WHITE: Color; }
@@ -62,6 +65,7 @@ declare module 'cc' {
   export class EventTouch {}
 
   export const resources: {
+    load<T>(path: string, callback: (err: Error | null, asset: T | null) => void): void;
     load<T>(path: string, type: any, callback: (err: Error | null, asset: T | null) => void): void;
   };
   export function instantiate(prefab: Prefab): Node;
