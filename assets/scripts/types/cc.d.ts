@@ -3,6 +3,7 @@ declare module 'cc' {
   export const resources: any;
   export const tween: any;
   export const v3: any;
+  export const Vec3: any;
   export const v2: any;
   export const input: any;
   export const Input: any;

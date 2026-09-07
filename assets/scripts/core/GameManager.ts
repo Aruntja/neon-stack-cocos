@@ -7,6 +7,7 @@ import {
   Prefab,
   resources,
   Sprite,
+  Vec3,
   UITransform,
   v3
 } from 'cc';
@@ -62,6 +63,7 @@ export class GameManager extends Component {
   private bet = INITIAL_BET;
   private difficultyIndex = 1;
   private round: RoundConfig | null = null;
+  private settledMultiplier = 1;
 
   onLoad(): void {
     this.ensureRootNodes();
@@ -136,7 +138,14 @@ export class GameManager extends Component {
   private async loadPrefabs(): Promise<void> {
     const load = (path: string): Promise<Prefab | null> =>
       new Promise((resolve) => {
-        resources.load(path, Prefab, (err: Error | null, prefab: Prefab) => resolve(err ? null : prefab));
+        resources.load(path, Prefab, (err: Error | null, prefab: Prefab) => {
+          if (err || !prefab) {
+            console.error(`[GameManager] Failed to load prefab at resources/${path}`, err);
+            resolve(null);
+            return;
+          }
+          resolve(prefab);
+        });
       });
 
     [
@@ -189,6 +198,7 @@ export class GameManager extends Component {
     base.setPosition(v3(0, STACK_START_Y, 0));
     this.gameLayer.addChild(base);
     this.stackBlocks = [base];
+    this.settledMultiplier = 1;
 
     this.balance -= this.bet;
     this.persist();
@@ -267,6 +277,12 @@ export class GameManager extends Component {
 
       this.score += 1;
       const multi = this.round?.multipliers[Math.min(this.score - 1, (this.round?.multipliers.length ?? 1) - 1)] ?? 1;
+      const deltaMultiplier = Math.max(0, multi - this.settledMultiplier);
+      if (deltaMultiplier > 0) {
+        this.balance += Math.floor(this.bet * deltaMultiplier);
+        this.persist();
+        this.settledMultiplier = multi;
+      }
       this.uiManager.updateLadder((this.round?.multipliers ?? []).slice(0, 8), Math.min(this.score, 7));
       this.uiManager.showResultBanner(`Perfect! ${multi.toFixed(2)}x`, true);
 
@@ -280,9 +296,6 @@ export class GameManager extends Component {
     this.uiManager.showResultBanner('Missed! Round lost', false);
     this.uiManager.setLocked(false);
 
-    const rewardMulti = this.round?.multipliers[Math.max(0, this.score - 1)] ?? 0;
-    const payout = Math.floor(this.bet * rewardMulti);
-    this.balance += payout;
     this.bestScore = Math.max(this.bestScore, this.score);
     this.persist();
     this.refreshHUD();
@@ -293,12 +306,13 @@ export class GameManager extends Component {
   private demolishTower(): void {
     for (let i = this.stackBlocks.length - 1; i >= 1; i -= 1) {
       const block = this.stackBlocks[i];
+      const worldPos = block.getWorldPosition(new Vec3());
       this.animation.fadeOutAndDestroy(block, (this.stackBlocks.length - 1 - i) * 0.07);
       if (this.debrisPrefab && block.isValid) {
         for (let p = 0; p < 3; p += 1) {
           const debris = instantiate(this.debrisPrefab);
           debris.parent = this.effectsLayer;
-          debris.setPosition(block.position);
+          debris.setWorldPosition(worldPos);
         }
       }
     }

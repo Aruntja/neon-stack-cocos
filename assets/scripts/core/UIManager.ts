@@ -120,12 +120,12 @@ export class UIManager extends Component {
   }
 
   private createLabel(parent: Node, name: string, x: number, y: number, text: string, size: number, color: Color): Label {
-    const node = new Node(name);
-    node.parent = parent;
+    const node = parent.getChildByName(name) ?? new Node(name);
+    if (!node.parent) node.parent = parent;
     node.setPosition(v3(x, y, 0));
-    const ui = node.addComponent(UITransform);
+    const ui = node.getComponent(UITransform) ?? node.addComponent(UITransform);
     ui.setContentSize(420, 70);
-    const label = node.addComponent(Label);
+    const label = node.getComponent(Label) ?? node.addComponent(Label);
     label.string = text;
     label.fontSize = size;
     label.lineHeight = size + 8;
