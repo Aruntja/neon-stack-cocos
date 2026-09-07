@@ -65,8 +65,8 @@ declare module 'cc' {
   export class EventTouch {}
 
   export const resources: {
-    load<T>(path: string, callback: (err: Error | null, asset: T | null) => void): void;
-    load<T>(path: string, type: any, callback: (err: Error | null, asset: T | null) => void): void;
+    load(path: string, callback: (err: Error | null, asset: any) => void): void;
+    load<T>(path: string, type: new (...args: any[]) => T, callback: (err: Error | null, asset: T | null) => void): void;
   };
   export function instantiate(prefab: Prefab): Node;
   export function tween(target: any): any;
