@@ -9,7 +9,7 @@
     "allowJs": false,
     "resolveJsonModule": true,
     "paths": {
-      "assets/scripts/*": ["./assets/scripts/*"]
+      "*": ["./*"]
     }
   },
   "include": [
