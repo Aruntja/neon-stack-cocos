@@ -24,7 +24,7 @@ import { CameraController } from './CameraController';
 import { PhysicsSimulator } from './PhysicsSimulator';
 import { UIManager } from './UIManager';
 
-const { ccclass } = _decorator;
+const { ccclass, property } = _decorator;
 
 @ccclass('GameManager')
 export class GameManager extends Component {
@@ -42,14 +42,23 @@ export class GameManager extends Component {
   private effectsLayer!: Node;
   private uiLayer!: Node;
 
+  @property(Prefab)
   private blockPrefab: Prefab | null = null;
+  @property(Prefab)
   private floorPrefab: Prefab | null = null;
+  @property(Prefab)
   private swingPrefab: Prefab | null = null;
+  @property(Prefab)
   private debrisPrefab: Prefab | null = null;
+  @property(Prefab)
   private hudPrefab: Prefab | null = null;
+  @property(Prefab)
   private controlBarPrefab: Prefab | null = null;
+  @property(Prefab)
   private resultBannerPrefab: Prefab | null = null;
+  @property(Prefab)
   private ladderPrefab: Prefab | null = null;
+  @property(Prefab)
   private particlesPrefab: Prefab | null = null;
 
   private swingNode: Node | null = null;
@@ -220,7 +229,7 @@ export class GameManager extends Component {
       this.swingNode = null;
     }
 
-    const swing = this.swingPrefab ? instantiate(this.swingPrefab) : new Node('Swing');
+    const swing = this.swingPrefab ? (instantiate(this.swingPrefab) as Node) : new Node('Swing');
     swing.name = 'Swing';
     swing.parent = this.gameLayer;
     const swingController = swing.getComponent(SwingController) ?? swing.addComponent(SwingController);
@@ -315,7 +324,7 @@ export class GameManager extends Component {
       this.animation.fadeOutAndDestroy(block, (this.stackBlocks.length - 1 - i) * DEMOLITION_STEP);
       if (this.debrisPrefab && block.isValid) {
         for (let p = 0; p < 3; p += 1) {
-          const debris = instantiate(this.debrisPrefab);
+          const debris = instantiate(this.debrisPrefab) as Node;
           debris.parent = this.effectsLayer;
           debris.setWorldPosition(worldPos);
         }
@@ -330,7 +339,7 @@ export class GameManager extends Component {
   }
 
   private makeBlockNode(name: string, prefab: Prefab | null, color: any): Node {
-    const node = prefab ? instantiate(prefab) : new Node(name);
+    const node = prefab ? (instantiate(prefab) as Node) : new Node(name);
     node.name = name;
     const block = node.getComponent(BlockController) ?? node.addComponent(BlockController);
     block.setSize(BLOCK_WIDTH, BLOCK_HEIGHT);
@@ -341,7 +350,7 @@ export class GameManager extends Component {
   private spawnStaticPrefab(prefab: Prefab | null, parent: Node, name: string, x: number, y: number): void {
     if (!prefab) return;
     if (parent.getChildByName(name)) return;
-    const node = instantiate(prefab);
+    const node = instantiate(prefab) as Node;
     node.name = name;
     node.parent = parent;
     node.setPosition(v3(x, y, 0));
