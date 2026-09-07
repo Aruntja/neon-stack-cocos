@@ -114,9 +114,11 @@ export class UIManager extends Component {
     const ui = label.node.getComponent(UITransform);
     if (ui) ui.setContentSize(90, 90);
     label.node.addComponent(Button);
-    label.node.on(Node.EventType.TOUCH_END, () => {
+    const handler = () => {
       if (!this.controlsLocked) cb();
-    });
+    };
+    label.node.on(Node.EventType.TOUCH_END, handler);
+    label.node.on(Node.EventType.MOUSE_UP, handler);
   }
 
   private createLabel(parent: Node, name: string, x: number, y: number, text: string, size: number, color: Color): Label {

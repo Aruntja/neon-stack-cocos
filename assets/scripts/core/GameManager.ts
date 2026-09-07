@@ -6,7 +6,6 @@ import {
   Node,
   Prefab,
   resources,
-  Sprite,
   Vec3,
   UITransform,
   v3
@@ -148,17 +147,7 @@ export class GameManager extends Component {
         });
       });
 
-    [
-      this.blockPrefab,
-      this.floorPrefab,
-      this.swingPrefab,
-      this.debrisPrefab,
-      this.hudPrefab,
-      this.controlBarPrefab,
-      this.resultBannerPrefab,
-      this.ladderPrefab,
-      this.particlesPrefab
-    ] = await Promise.all([
+    const loadedPrefabs = await Promise.all([
       load('prefabs/blocks/Base'),
       load('prefabs/blocks/Floor'),
       load('prefabs/blocks/Swing'),
@@ -169,6 +158,18 @@ export class GameManager extends Component {
       load('prefabs/ui/Ladder'),
       load('prefabs/effects/Particles')
     ]);
+
+    [
+      this.blockPrefab,
+      this.floorPrefab,
+      this.swingPrefab,
+      this.debrisPrefab,
+      this.hudPrefab,
+      this.controlBarPrefab,
+      this.resultBannerPrefab,
+      this.ladderPrefab,
+      this.particlesPrefab
+    ] = loadedPrefabs;
   }
 
   private instantiateStaticPrefabs(): void {
@@ -205,7 +206,6 @@ export class GameManager extends Component {
 
     this.uiManager.showResultBanner('Tap to drop', true);
     this.uiManager.updateLadder(this.round.multipliers.slice(0, 8), 0);
-    this.uiManager.setLocked(false);
     this.refreshHUD();
     this.spawnSwing();
   }
@@ -224,6 +224,9 @@ export class GameManager extends Component {
     const swingController = swing.getComponent(SwingController) ?? swing.addComponent(SwingController);
     swingController.speed = this.round.difficulty.swingSpeed;
     swingController.range = this.round.difficulty.swingRange;
+    if (!this.swingPrefab) {
+      swing.setPosition(v3(0, swingController.baseY, 0));
+    }
 
     const block = this.makeBlockNode('FallingBlock', this.blockPrefab, Colors.neonPink);
     block.parent = swing;
@@ -329,12 +332,12 @@ export class GameManager extends Component {
     const block = node.getComponent(BlockController) ?? node.addComponent(BlockController);
     block.setSize(BLOCK_WIDTH, BLOCK_HEIGHT);
     block.setColor(color);
-    if (!node.getComponent(Sprite)) node.addComponent(Sprite);
     return node;
   }
 
   private spawnStaticPrefab(prefab: Prefab | null, parent: Node, name: string, x: number, y: number): void {
     if (!prefab) return;
+    if (parent.getChildByName(name)) return;
     const node = instantiate(prefab);
     node.name = name;
     node.parent = parent;

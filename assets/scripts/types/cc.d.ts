@@ -13,6 +13,7 @@ declare module 'cc' {
   export const Button: any;
   export const Color: any;
   export const Sprite: any;
+  export const Graphics: any;
   export const SpriteFrame: any;
   export const Texture2D: any;
   export const ImageAsset: any;

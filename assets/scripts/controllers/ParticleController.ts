@@ -1,4 +1,4 @@
-import { _decorator, Color, Component, Node, Sprite, UITransform, v3 } from 'cc';
+import { _decorator, Component, Graphics, Node, UITransform, v3 } from 'cc';
 import { Colors } from '../config/ColorScheme';
 
 const { ccclass } = _decorator;
@@ -10,8 +10,10 @@ export class ParticleController extends Component {
       const dot = new Node(`Particle_${i}`);
       const ui = dot.addComponent(UITransform);
       ui.setContentSize(12, 12);
-      const sp = dot.addComponent(Sprite);
-      sp.color = i % 2 === 0 ? Colors.neonPink : Colors.neonLime;
+      const g = dot.addComponent(Graphics);
+      g.fillColor = i % 2 === 0 ? Colors.neonPink : Colors.neonLime;
+      g.circle(0, 0, 6);
+      g.fill();
       dot.setPosition(v3(x + (Math.random() * 2 - 1) * 20, y + (Math.random() * 2 - 1) * 20, 0));
       dot.parent = parent;
       dot.addComponent(ParticleControllerMotion);

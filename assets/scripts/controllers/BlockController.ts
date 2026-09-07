@@ -1,4 +1,4 @@
-import { _decorator, Color, Component, Node, Sprite, UITransform } from 'cc';
+import { _decorator, Color, Component, Graphics, UITransform } from 'cc';
 import { BLOCK_HEIGHT, BLOCK_WIDTH } from '../config/Constants';
 import { Colors } from '../config/ColorScheme';
 
@@ -15,8 +15,13 @@ export class BlockController extends Component {
 
   setColor(color: Color): void {
     this.ensureVisual();
-    const sprite = this.node.getComponent(Sprite);
-    if (sprite) sprite.color = color;
+    const graphics = this.node.getComponent(Graphics);
+    if (graphics) {
+      graphics.clear();
+      graphics.fillColor = color;
+      graphics.roundRect(-this.width * 0.5, -this.height * 0.5, this.width, this.height, 14);
+      graphics.fill();
+    }
   }
 
   setSize(width: number, height: number): void {
@@ -30,10 +35,11 @@ export class BlockController extends Component {
     if (!ui) ui = this.node.addComponent(UITransform);
     ui.setContentSize(this.width, this.height);
 
-    let sprite = this.node.getComponent(Sprite);
-    if (!sprite) sprite = this.node.addComponent(Sprite);
-    if (!sprite.color || sprite.color.equals(Color.TRANSPARENT)) {
-      sprite.color = Colors.neonBlue;
-    }
+    let graphics = this.node.getComponent(Graphics);
+    if (!graphics) graphics = this.node.addComponent(Graphics);
+    graphics.clear();
+    graphics.fillColor = Colors.neonBlue;
+    graphics.roundRect(-this.width * 0.5, -this.height * 0.5, this.width, this.height, 14);
+    graphics.fill();
   }
 }
