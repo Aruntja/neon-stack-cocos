@@ -2,11 +2,15 @@
   "compilerOptions": {
     "target": "ES2018",
     "module": "ESNext",
+    "moduleResolution": "bundler",
     "experimentalDecorators": true,
     "strict": false,
     "skipLibCheck": true,
     "allowJs": false,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "paths": {
+      "assets/scripts/*": ["./assets/scripts/*"]
+    }
   },
   "include": [
     "assets/scripts/**/*.ts"
